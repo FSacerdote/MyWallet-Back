@@ -40,6 +40,12 @@ const signInSchema = joi.object({
     password: joi.string().required()
 })
 
+const transactionSchema = joi.object({
+    value: joi.number().positive().required(),
+    description: joi.string().required(),
+    type: joi.any().valid("entrada", "saida").required()
+})
+
 // endpoints
 
 app.post("/sign-up", async(req, res)=>{
@@ -76,6 +82,31 @@ app.post("/sign-in", async(req, res)=>{
         res.send(token)
     } catch (error) {
         res.status(500).send(error.message)
+    }
+})
+
+app.post("/new-transaction/:type", async(req, res)=>{
+    const {authorization} = req.headers
+    const {value, description}  = req.body
+    const token = authorization?.replace("Bearer ", "")
+    const {type} = req.params
+
+    if(!token) return res.status(401).send("Não tem token")
+    const validation = transactionSchema.validate({value, description, type}, {abortEarly: false})
+    if(validation.error){
+        const err = validation.error.details.map((detail)=> detail.message)
+        return res.status(422).send(err)
+    }
+    try {
+        const session = await db.collection("sessions").findOne({token})
+        if(!session) return res.status(401).send("Usuario não esta logado")
+        const user = await db.collection("users").findOne({_id: session.userId})
+        if(!user) return res.status(401).send("Usuario nao encontrado")
+        delete user.password
+        await db.collection("transactions").insertOne({userId: user._id, type, value, description})
+        res.send()
+    } catch (error) {
+        res.status(500).send(error)
     }
 })
 
