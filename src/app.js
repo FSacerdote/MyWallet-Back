@@ -7,7 +7,7 @@ import bcrypt from "bcrypt"
 import {v4 as uuid} from "uuid"
 import dayjs from "dayjs"
 
-const PORT = 5000
+const port = process.env.PORT || 5000
 
 dotenv.config()
 
@@ -129,4 +129,4 @@ app.get("/transactions", async(req, res)=>{
 
 // ligando o servidor 
 
-app.listen(PORT, ()=> console.log(`O servidor está rodando na porta: ${PORT}`))
+app.listen(PORT, ()=> console.log(`O servidor está rodando na porta: ${port}`))
