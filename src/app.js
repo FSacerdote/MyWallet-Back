@@ -129,4 +129,4 @@ app.get("/transactions", async(req, res)=>{
 
 // ligando o servidor 
 
-app.listen(PORT, ()=> console.log(`O servidor está rodando na porta: ${port}`))
+app.listen(port, ()=> console.log(`O servidor está rodando na porta: ${port}`))
