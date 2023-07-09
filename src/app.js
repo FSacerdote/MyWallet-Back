@@ -5,6 +5,7 @@ import cors from "cors"
 import joi from "joi"
 import bcrypt from "bcrypt"
 import {v4 as uuid} from "uuid"
+import dayjs from "dayjs"
 
 const PORT = 5000
 
@@ -102,7 +103,7 @@ app.post("/new-transaction/:type", async(req, res)=>{
         if(!session) return res.status(401).send("Usuario não esta logado")
         const user = await db.collection("users").findOne({_id: session.userId})
         if(!user) return res.status(401).send("Usuario nao encontrado")
-        await db.collection("transactions").insertOne({userId: user._id, type, value, description})
+        await db.collection("transactions").insertOne({userId: user._id, type, value, description, date: dayjs().format("DD/MM")})
         res.send()
     } catch (error) {
         res.status(500).send(error)
