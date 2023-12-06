@@ -1,3 +1,4 @@
+import httpStatus from "http-status"
 import { transactionsServices } from "../services/transactions.services.js"
 
 export async function newTransaction(req, res){
@@ -6,7 +7,7 @@ export async function newTransaction(req, res){
         await transactionsServices.createTransaction(userId, req.body)
         res.send()
     } catch (error) {
-        res.status(500).send(error)
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error)
     }
 }
 
@@ -16,6 +17,6 @@ export async function getTransactions(req, res){
         const info = await transactionsServices.getTransactions(userId)
         res.send(info)
     } catch (error) {
-        res.status(500).send(error)
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error)
     }
 }
