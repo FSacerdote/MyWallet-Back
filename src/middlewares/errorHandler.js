@@ -1,7 +1,6 @@
-import httpStatus from "http-status";
+import httpStatus from 'http-status';
 
-export function errorHandler(err, req, res, next){
-
+export function errorHandler(err, req, res, next) {
   if (err.name === 'CONFLICT') {
     return res.status(httpStatus.CONFLICT).send({
       message: err.message,
