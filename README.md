@@ -88,3 +88,30 @@ Para executar este projeto em desenvolvimento, é necessário seguir os passos a
 - A propriedade `DATABASE_URL` é usada para fazer a conexão com o banco de dados;
 - Para rodar o projeto em desenvolvimento, execute o comando `npm run dev`;
 - Testes manuais podem ser feitos através do Thunder Client. Na raiz do projeto há uma coleção chamada `thunder-collection.json` que pode ser carregada na ferramenta.
+
+# Como rodar com docker
+
+Para executar esta aplicação com Docker, é neccessário seguir os passos seguintes:
+
+- Primeiramente é necessário criar uma network através do comando:
+```
+  docker network create my-wallet-network
+```
+`my-wallet-network` pode ser substituído pelo nome de sua escolha.
+
+- Em seguida será necessário rodar uma instância do mongodb nessa mesma rede, pode se fazer isso através do comando:
+
+```
+  docker run --name mongo-mywallet --network=my-wallet-network -d mongo
+```
+`mongo-mywallet` pode ser substituído pelo nome de sua escolha, mas `my-wallet-network` deve ser o mesmo nome escolhido no item anterior.
+
+- Alternativamente ao passo anterior, você pode rodar o mongo localmente no seu computador.
+
+- Em seguida utilize o comando abaixo para rodar um container com a aplicação backend:
+```
+  docker run -d --name my-wallet-back --network=my-wallet-network -p 3000:5000 -e DATABASE_URL=mongodb://mongo-mywallet:27017/mywallet fsacerdote/my-wallet-backend
+```
+Note que `my-wallet-back` pode ser substituído por um nome de sua escolha, porém `my-wallet-network` e `mongo-mywallet` devem ser respectivamente o nome de sua network e da instância do mongo que está rodando nela. Se você estiver rodando localmente o mongo, ou através de um deploy, você deverá substituir `mongodb://mongo-mywallet:27017/mywallet fsacerdote/my-wallet-backend` pela URL do seu banco mongodb.
+
+- Após a realização de todos os passos, o backend poderá ser acessado através do `localhost:3000`. Note que a porta de acesso pode ser mudada no último comando trocando `3000:5000` por `[porta desejada]:5000`.
